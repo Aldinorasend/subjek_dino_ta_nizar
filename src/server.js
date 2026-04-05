@@ -2,11 +2,16 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg'); // Perbaikan di sini
 const { PrismaClient } = require('@prisma/client');
-const fastify = require('fastify')({ logger: true });
+const fastify = require('fastify')({ logger: false });
 
 // Setup Koneksi Pool
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
+// Di src/server.js
+const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL,
+  max: 10, // Maksimal 10 koneksi saja yang boleh terbuka
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});const adapter = new PrismaPg(pool);
 
 // Inisialisasi Client dengan Adapter
 const prisma = new PrismaClient({ adapter });
