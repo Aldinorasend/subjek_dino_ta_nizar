@@ -1,0 +1,27 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  // JANGAN masukkan url di sini lagi
+}
+
+model Patient {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  records   Record[]
+  createdAt DateTime @default(now())
+}
+
+model Record {
+  id        String   @id @default(uuid())
+  diagnosis String
+  treatment String
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  createdAt DateTime @default(now())
+}
